@@ -5,13 +5,16 @@ import numpy as np
 options = {"model": "cfg/yolov2.cfg", "load": "bin/yolov2.weights", "threshold": 0.1}
 
 tfnet = TFNet(options)
-
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640, 480))
 def main():
     cap = cv2.VideoCapture(0)
 
     while(True):
 
         ret, frame = cap.read()
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        out.write(hsv)
         #print(frame)
         #cv2.imshow('Stream IP Camera OpenCV', frame)
         result = tfnet.return_predict(frame)
@@ -24,7 +27,7 @@ def main():
 
     cap.release()
     cv2.destroyAllWindows()
-
+out.release()
 
 def boxing(original_img, predictions):
     newImage = np.copy(original_img)
